@@ -1,3 +1,6 @@
+# Imagify-final
+Image compression with real time quality analysis
+
 # imagify
 # Imagify: Comprehensive Project Documentation
 
