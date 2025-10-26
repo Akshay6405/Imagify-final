@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Imagify - Image Compression Tool</title>
+
+    <!-- Added for new font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +17,12 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <div class="logo-icon">📷</div>
+                <!-- Replaced emoji with SVG icon -->
+                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
                 <h1>Imagify</h1>
             </div>
             <p class="subtitle">Intelligent Image Compression with Real-time Quality Analysis</p>
@@ -41,11 +52,14 @@
                         <canvas id="originalCanvas"></canvas>
                     </div>
                 </div>
-                
+
                 <div class="image-container">
                     <div class="image-header">
                         <h3>Compressed Image</h3>
-                        <span class="file-size" id="compressedSize">-</span>
+                        <div class="file-size-wrapper">
+                            <span class="file-size-badge" id="bestQualityBadge" style="display: none;" title="The compressed version was larger than the original, so the original is being used.">Using Original</span>
+                            <span class="file-size" id="compressedSize">-</span>
+                        </div>
                     </div>
                     <div class="image-wrapper">
                         <canvas id="compressedCanvas"></canvas>
@@ -61,26 +75,35 @@
                 <div class="control-group">
                     <label class="form-label">Compression Quality</label>
                     <div class="slider-container">
-                        <input type="range" id="qualitySlider" min="1" max="100" value="80" class="quality-slider">
+                        <div class="slider-wrapper">
+                            <div class="slider-background-track"></div>
+                            <div class="slider-track-highlight" id="deadZoneHighlight"></div>
+                            <input type="range" id="qualitySlider" min="1" max="100" value="100" class="quality-slider">
+                        </div>
                         <div class="slider-value">
-                            <span id="qualityValue">80</span>%
+                            <span id="qualityValue">100</span>%
                         </div>
                     </div>
+                    <!-- Note explaining the optimization and dead zone -->
+                    <p class="optimization-note">
+                        💡 Note: High quality JPEGs (esp. from PNGs) might increase size. The download button provides the smallest file (original or compressed). The <span class="highlight-example">highlighted area</span> indicates where size *may* increase for this image.
+                    </p>
                 </div>
+
 
                 <div class="control-row">
                     <div class="control-group">
                         <label class="form-label" for="maxWidth">Max Width (px)</label>
-                        <input type="number" id="maxWidth" class="form-control" placeholder="Auto">
+                        <input type="number" id="maxWidth" class="form-control" placeholder="Original">
                     </div>
                     <div class="control-group">
                         <label class="form-label" for="maxHeight">Max Height (px)</label>
-                        <input type="number" id="maxHeight" class="form-control" placeholder="Auto">
+                        <input type="number" id="maxHeight" class="form-control" placeholder="Original">
                     </div>
                 </div>
 
                 <div class="control-buttons">
-                    <button class="btn btn--secondary" id="resetBtn">Reset to Original</button>
+                    <button class="btn btn--secondary" id="resetBtn">Reset Settings</button>
                     <button class="btn btn--outline" id="heatMapToggle">Show Heat Map</button>
                     <button class="btn btn--primary" id="downloadBtn">Download Compressed</button>
                 </div>
@@ -98,7 +121,7 @@
                         <div class="metric-value" id="psnrValue">-</div>
                         <div class="metric-unit">dB</div>
                     </div>
-                    
+
                     <div class="metric-card">
                         <div class="metric-header">
                             <span class="metric-label">SSIM</span>
@@ -107,7 +130,7 @@
                         <div class="metric-value" id="ssimValue">-</div>
                         <div class="metric-unit">index (0-1)</div>
                     </div>
-                    
+
                     <div class="metric-card">
                         <div class="metric-header">
                             <span class="metric-label">Compression Ratio</span>
@@ -116,7 +139,7 @@
                         <div class="metric-value" id="compressionRatio">-</div>
                         <div class="metric-unit">:1</div>
                     </div>
-                    
+
                     <div class="metric-card">
                         <div class="metric-header">
                             <span class="metric-label">Size Reduction</span>
